@@ -24,6 +24,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "loading": {
+      "hideExponentText": true
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
