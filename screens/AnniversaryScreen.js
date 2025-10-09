@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState}from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { 
   View, 
@@ -7,11 +7,18 @@ import {
   Image, 
   FlatList, 
   SafeAreaView,
-  TouchableOpacity
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
+
 const PRIMARY_BLUE = "#1c93ed";
 
+
+import { BlurView } from 'expo-blur';
 export default function AnniversaryScreen({ navigation }) {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const decorItems = [
     {
       id: '1',
@@ -84,6 +91,15 @@ export default function AnniversaryScreen({ navigation }) {
       oldPrice: '₹3,500',
     },
   ];
+  const handleLongPress = (image) => {
+    setSelectedImage(image);
+    setModalVisible(true);
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
+    setSelectedImage(null);
+  };
 
   return (
     
@@ -93,23 +109,44 @@ export default function AnniversaryScreen({ navigation }) {
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Anniversary</Text>
-      </View>
+        </View>
         <FlatList
           data={decorItems}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <Image source={item.image} style={styles.cardImage} />
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                <View style={styles.priceRow}>
-                  <Text style={styles.newPrice}>{item.price}</Text>
-                  <Text style={styles.oldPrice}>{item.oldPrice}</Text>
+              <TouchableOpacity 
+              onLongPress={() => handleLongPress(item.image)}
+              delayLongPress={200}
+            >
+              <View style={styles.card}>
+                <Image source={item.image} style={styles.cardImage} />
+                <View style={styles.cardInfo}>
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                  <View style={styles.priceRow}>
+                    <Text style={styles.newPrice}>{item.price}</Text>
+                    <Text style={styles.oldPrice}>{item.oldPrice}</Text>
+                  </View>
                 </View>
               </View>
+            </TouchableOpacity>
             </View>
           )}
         />
+        <Modal visible={modalVisible} transparent animationType="fade">
+        <TouchableWithoutFeedback onPress={handleClose}>
+          <View style={styles.modalContainer}>
+            <BlurView intensity={60} style={StyleSheet.absoluteFill} tint="dark" />
+            {selectedImage && (
+              <Image 
+                source={selectedImage} 
+                style={styles.zoomedImage} 
+                resizeMode="contain" 
+              />
+            )}
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       </View>
     
   );
@@ -118,7 +155,7 @@ export default function AnniversaryScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f3f6f9ff", // Dark background
+    backgroundColor: "#f3f6f9ff", 
   },
   header: {
     paddingTop: 50,
@@ -126,8 +163,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1c2530', // Same as background for a seamless look
-    borderBottomWidth: 4,
+    backgroundColor: '#2f4156',
+    borderBottomWidth: 5,
     borderBottomColor: '#f7f8faff',
   },
   backButton: {
@@ -140,6 +177,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingTop: 30,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -169,24 +207,25 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   card: {
-  backgroundColor: '#fdfbfbff',
-  borderRadius: 12,
-  borderColor: '#fdfbfbff',
-  marginBottom: 12,
-  overflow: 'hidden',
-  width: '100%',
-  shadowColor: '#000',
-  shadowOpacity: 0.2,
-  shadowRadius: 5,
-  elevation: 5,
+    marginTop:10,
+  marginLeft: 14,
+  width: '93%',
+  shadowColor: '#000',      
+  shadowOffset: { width: 0, height: 4 }, 
+  shadowRadius: 20,           
+  elevation: 8,
 },
-cardImage: {
-  width: '100%',
-  height: 400,
+cardImage: { 
+borderTopLeftRadius: 22,
+width: '100%',
+height: 240,
+align: 'center', 
 },
 cardInfo: {
-  padding: 12,
-  backgroundColor: '#111827',
+  padding: 6,
+  backgroundColor: '#2f4156',
+  
+  borderBottomRightRadius: 22,
 },
 cardTitle: {
   fontSize: 16,
@@ -209,4 +248,18 @@ oldPrice: {
   color: '#888',
   textDecorationLine: 'line-through',
 },
+modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomedImage: {
+    width: '90%',
+  height: '70%',
+  borderRadius: 20,          
+  shadowColor: '#000',
+  shadowOpacity: 0.25,
+  shadowRadius: 10,
+  elevation: 10,
+  },
 });

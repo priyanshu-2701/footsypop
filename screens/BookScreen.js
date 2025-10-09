@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList,SafeAreaView } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList,SafeAreaView,StatusBar } from "react-native";
 // (No need for Alert import anymore)
 
 const categories = [
@@ -49,7 +50,7 @@ export default function BookScreen({ navigation }) {
       navigation.navigate("EventDetails", { category });
       break;
     case "Wedding":
-      navigation.navigate('Wedding');
+      navigation.navigate("EventDetails", { category });
       break;
     case "Naming Ceremony":
       navigation.navigate("EventDetails", { category });
@@ -85,7 +86,23 @@ export default function BookScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="light" backgroundColor="#0077cc" translucent={false} />
+                  <View style={styles.header}>
+                  <Text style={styles.title1}>FootsyPop</Text>
+          
+                  <View style={styles.headerIcons}>
+                    <TouchableOpacity onPress={() => alert("Working on this feature!")}>
+                      <Ionicons name="search" size={24} color="white" style={styles.icon} />
+                    </TouchableOpacity>
+          
+                    <TouchableOpacity onPress={() => alert("Working on this feature!")}>
+                      <Ionicons name="call" size={24} color="white" style={styles.icon} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
         <View style={styles.container}>
+          
             <Text style={styles.title}>Book Your Event</Text>
             <Text style={styles.subtitle}>Choose an Event Type to Proceed</Text>
 
@@ -104,14 +121,41 @@ export default function BookScreen({ navigation }) {
 
 
 const styles = StyleSheet.create({
+    header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#0077cc",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  title1: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "white",
+    letterSpacing: 1,
+    fontFamily: "LobsterTwo_400Regular"
+  },
+  headerIcons: {
+    flexDirection: "row",
+  },
+  icon: {
+    marginLeft: 20,
+  },
     safeArea: {
     flex: 1,
-    backgroundColor: '#F2F4F7',
+    backgroundColor: '#ffffffff',
     },
     container: {
     flex: 1,
     alignItems: 'center',
     padding: 20,
+    color:'white',
     },
     title: {
     fontSize: 28,
@@ -130,8 +174,8 @@ const styles = StyleSheet.create({
     option: {
     backgroundColor: '#1E293B',
     borderRadius: 10,
-    width: 280,
-    height: 50,
+    width: 270,
+    height: 45,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
@@ -148,5 +192,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     },
+    
     
 });

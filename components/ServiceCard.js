@@ -22,24 +22,23 @@ const ServiceCard = ({ imageSource, title, description }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderTopLeftRadius: 22,
+    borderBottomRightRadius: 22,
     marginVertical: 10,
-    marginHorizontal: 10, // Margin on each side for the card itself
-    width: cardWidth, // This will make cards take almost full width
-    maxWidth: 350, // Max width for larger screens to keep it elegant
-    elevation: 3, // Android shadow
-    shadowColor: '#000', // iOS shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 3.84,
-    overflow: 'hidden', // Ensures image respects borderRadius
-    alignSelf: 'center', // Center the card if maxWidth is hit
+    marginHorizontal: 10, 
+    width: cardWidth, 
+    maxWidth: 350,  
+    alignSelf: 'center', 
+    shadowColor: '#000',       // iOS shadow color
+    shadowOffset: { width: 0, height: 4 }, // iOS shadow offset
+    shadowOpacity: 0.4,       // iOS shadow transparency
+    shadowRadius: 6,           // iOS blur radius
+    elevation: 8,
   },
   cardImage: {
     width: '100%',
     height: 180, // Height of the image at the top of the card
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    padding: 8
   },
   cardTitle: {
     fontSize: 20,

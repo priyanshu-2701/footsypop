@@ -40,6 +40,13 @@ export default function WeddingScreen({ navigation }) {
       price: '₹500',
       oldPrice: '₹12',
     },
+    {
+      id: '5',
+      title: 'Lohandi',
+      image: require('../assets/motka.jpg'),
+      price: '₹500',
+      oldPrice: '₹12',
+    },
   ];
 
   return (
