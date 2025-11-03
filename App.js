@@ -18,7 +18,7 @@ import EventDetailsScreen from "./screens/EventDetailsScreen";
 import AnniversaryScreen from './screens/AnniversaryScreen';
 import BirthdayScreen from './screens/BirthdayScreen';
 import WeddingScreen from './screens/WeddingScreen';
-
+import EditProfileScreen from "./screens/EditProfileScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -34,10 +34,17 @@ function MainTabs() {
     <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarStyle: {
-            backgroundColor: BAR_BLUE, // Dark blue background for the bar
-            height: 60, // Reduced height for better proportion
-            paddingBottom: 5, // Add a bit of padding for the labels
-          },
+  position: 'absolute',         // keeps it floating above content
+  backgroundColor: 'rgba(0, 0, 0, 0.9)', // semi-transparent black
+  borderTopWidth: 0,            // removes top border line
+  elevation: 0,                 // removes Android shadow
+  height: 60,
+  paddingBottom: 25,
+  left: 10,
+  right: 10,
+  borderRadius: 20,             // rounded corners
+             // makes radius visible
+},
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: "600",
@@ -53,8 +60,8 @@ function MainTabs() {
               iconName = "home";
             } else if (route.name === "Booking") {
               iconName = focused ? "calendar" : "calendar-outline";
-            } else if (route.name === "Settings") {
-              iconName = "settings";
+            } else if (route.name === "Profile") {
+              iconName = "person-sharp";
             }
 
             // Active tab → floating white circle
@@ -65,13 +72,13 @@ function MainTabs() {
                   width: CIRCLE_SIZE,
                   height: CIRCLE_SIZE,
                   borderRadius: CIRCLE_SIZE / 2, // perfect circle
-                  backgroundColor: PRIMARY_BLUE,
+                  backgroundColor: '#f2f862',
                   alignItems: "center",
                   justifyContent: "center",
                   // lift the circle so it "floats" above the bar
                   transform: [{ translateY: -18 }],
                   borderWidth: 3,
-                  borderColor: "white",
+                  borderColor: '#404040',
                   // shadow for iOS / elevation for Android
                   ...Platform.select({
                     ios: {
@@ -86,22 +93,22 @@ function MainTabs() {
                   }),
                 }}
               >
-                  <Ionicons name={iconName} size={activeIconSize} color="white" />
+                  <Ionicons name={iconName} size={activeIconSize} color='#000000' />
                 </View>
               );
             }
 
             // Inactive tab → simple white icon
-            return <Ionicons name={iconName} size={iconSize} color="white" />;
+            return <Ionicons name={iconName} size={iconSize} color='white' />;
           },
           
-          tabBarActiveTintColor: "white",
+          tabBarActiveTintColor: '#000000',
           tabBarInactiveTintColor: "white",
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Booking" component={BookScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Profile" component={SettingsScreen} />
       </Tab.Navigator>
   );
 }
@@ -126,6 +133,7 @@ export default function App() {
             <Stack.Screen name="Anniversary" component={AnniversaryScreen} />
             <Stack.Screen name="Birthday" component={BirthdayScreen} />
             <Stack.Screen name="Wedding" component={WeddingScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           </>
         ) : (
           <>

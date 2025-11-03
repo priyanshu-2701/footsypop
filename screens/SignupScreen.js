@@ -9,61 +9,17 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 
-// Full stateCityData list
-const stateCityData = {
-  Andhra_Pradesh: ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"],
-  ArunachalPradesh: ["Itanagar", "Pasighat", "Tawang"],
-  Assam: ["Guwahati", "Dibrugarh", "Jorhat", "Silchar"],
-  Bihar: ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Darbhanga"],
-  Chhattisgarh: ["Raipur", "Bilaspur", "Korba", "Durg"],
-  Goa: ["Panaji", "Vasco da Gama", "Margao"],
-  Gujarat: ["Ahmedabad", "Surat", "Vadodara", "Rajkot"],
-  Haryana: ["Gurugram", "Faridabad", "Panipat", "Karnal"],
-  HimachalPradesh: ["Shimla", "Dharamshala", "Mandi", "Solan"],
-  Jharkhand: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
-  Karnataka: ["Bengaluru", "Mysore", "Mangalore", "Hubli"],
-  Kerala: ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam"],
-  MadhyaPradesh: ["Bhopal", "Indore", "Gwalior", "Jabalpur"],
-  Maharashtra: ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"],
-  Manipur: ["Imphal", "Bishnupur"],
-  Meghalaya: ["Shillong", "Tura"],
-  Mizoram: ["Aizawl", "Lunglei"],
-  Nagaland: ["Kohima", "Dimapur"],
-  Odisha: ["Bhubaneswar", "Cuttack", "Rourkela", "Sambalpur"],
-  Punjab: ["Ludhiana", "Amritsar", "Jalandhar", "Patiala"],
-  Rajasthan: ["Jaipur", "Jodhpur", "Udaipur", "Bikaner", "Ajmer"],
-  Sikkim: ["Gangtok", "Namchi"],
-  TamilNadu: ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli"],
-  Telangana: ["Hyderabad", "Warangal", "Nizamabad"],
-  Tripura: ["Agartala"],
-  Uttarakhand: ["Dehradun", "Haridwar", "Rishikesh"],
-  UttarPradesh: ["Lucknow", "Kanpur", "Varanasi", "Agra", "Allahabad"],
-  WestBengal: ["Kolkata", "Siliguri", "Howrah", "Asansol"],
-  "NCT of Delhi": ["New Delhi", "Dwarka", "Saket"],
-  Puducherry: ["Puducherry"],
-  "Jammu & Kashmir": ["Srinagar", "Jammu"],
-  Ladakh: ["Leh"],
-  Chandigarh: ["Chandigarh"],
-  "Andaman & Nicobar": ["Port Blair"],
-  "Dadra & Nagar Haveli & Daman & Diu": ["Daman", "Silvassa"],
-  Lakshadweep: ["Kavaratti"],
-};
-
 export default function SignupScreen({ navigation }) {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [pincode, setPincode] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +27,7 @@ export default function SignupScreen({ navigation }) {
   const handleSignup = async () => {
     setError("");
 
-    if (!fullName || !email || !phone || !password || !state || !city || !pincode) {
+    if (!firstName || !lastName || !email || !phone || !password) {
       setError("Please fill in all fields.");
       return;
     }
@@ -81,23 +37,16 @@ export default function SignupScreen({ navigation }) {
       return;
     }
 
-    if (!/^\d{6}$/.test(pincode)) {
-      setError("Enter a valid 6-digit pincode.");
-      return;
-    }
-
     setLoading(true);
 
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
       await setDoc(doc(db, "users", userCred.user.uid), {
-        fullName,
+        firstName,
+        lastName,
         email,
         phone,
-        state,
-        city,
-        pincode,
         createdAt: serverTimestamp(),
       });
 
@@ -116,9 +65,16 @@ export default function SignupScreen({ navigation }) {
       <Text style={styles.subtitle}>Please fill out the form below</Text>
 
       <TextInput
-        placeholder="Full Name"
-        value={fullName}
-        onChangeText={setFullName}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+        style={styles.input}
+      />
+
+      <TextInput
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
         style={styles.input}
       />
 
@@ -151,46 +107,6 @@ export default function SignupScreen({ navigation }) {
           <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="gray" />
         </TouchableOpacity>
       </View>
-
-      <RNPickerSelect
-        onValueChange={(value) => {
-          setState(value);
-          setCity("");
-        }}
-        items={Object.keys(stateCityData).map((state) => ({
-          label: state,
-          value: state,
-        }))}
-        placeholder={{ label: "Select State", value: null }}
-        style={pickerSelectStyles}
-        value={state}
-      />
-
-      <RNPickerSelect
-        onValueChange={(value) => setCity(value)}
-        items={(stateCityData[state] || []).map((city) => ({
-          label: city,
-          value: city,
-        }))}
-        placeholder={{ label: "Select City", value: null }}
-        style={pickerSelectStyles}
-        value={city}
-        disabled={!state}
-      />
-
-      <TextInput
-      placeholder="Pincode"
-      value={pincode}
-      onChangeText={(text) => {
-        const cleanedText = text.replace(/[^0-9]/g, ""); // Remove non-digits
-        if (cleanedText.length <= 6) {
-          setPincode(cleanedText);
-        }
-      }}
-      keyboardType="numeric"
-      maxLength={6}
-      style={styles.input}
-    />
 
       {error !== "" && <Text style={styles.errorText}>{error}</Text>}
 
@@ -276,30 +192,3 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
-
-const pickerSelectStyles = {
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    color: "black",
-    paddingRight: 30,
-    backgroundColor: "#f9f9f9",
-    marginBottom: 15,
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    color: "black",
-    paddingRight: 30,
-    backgroundColor: "#f9f9f9",
-    marginBottom: 15,
-  },
-};

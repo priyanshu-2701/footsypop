@@ -88,9 +88,6 @@ export default function HomeScreen() {
   });
   return (
     <SafeAreaView style={styles.safeArea}>
-    <ScrollView style={styles.scrollView}>
-    <View style={styles.container}>
-      
       {/* 🔹 Custom Header */}
       <View style={styles.header}>
         <Text style={styles.title}>FootsyPop</Text>
@@ -105,6 +102,11 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
+    
+    <ScrollView style={styles.scrollView}>
+    <View style={styles.container}>
+      
+      
 
       {/* 🔹 Image Slider */}
       <View style={styles.swiperContainer}>
@@ -171,27 +173,16 @@ export default function HomeScreen() {
     </View>
     </ScrollView>
     </SafeAreaView>
+    
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#0077cc", // header bg fills notch
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: COLORS.lightBackground,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#f6f3f3ff",
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#0077cc",
+    backgroundColor: '#00000',
     paddingHorizontal: 16,
     paddingVertical: 12,
     elevation: 5,
@@ -199,6 +190,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     shadowOffset: { width: 0, height: 2 },
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000000ff", // Fills notch area
+  },
+  
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  container: {
+
+    flex: 1,
+    backgroundColor: "#000000",
   },
   title: {
     fontSize: 22,
@@ -246,33 +251,33 @@ const styles = StyleSheet.create({
    mainHeading: {
     fontSize: 26, 
     fontWeight: "bold",
-    color: COLORS.headingBlue, 
+    color: '#f2f862', 
     marginBottom: 5, 
   },
   headingUnderline: {
     width: 80, 
     height: 5,
-    backgroundColor: COLORS.primaryBlue, 
+    backgroundColor: '#fefefe', 
   },
   subHeading: {
     fontSize: 20,
     fontWeight: "bold",
-    color: COLORS.blackText,
+    color: 'white',
     marginBottom: 20,
   },
   
   bodyText: {
-    fontSize: 16, 
+    fontSize: 15, 
     lineHeight: 24, 
-    color: COLORS.blackText,
+    color: 'white',
     marginBottom: 20,
   },
   
   sectionHeading: {
-    fontSize: 24, 
+    fontSize: 20, 
     fontWeight: "bold",
-    color: COLORS.blackText,
-    textAlign: "center", 
+    color: 'white',
+    textAlign: "left", 
     marginTop: 20,
     marginBottom: 15,
   },

@@ -21,9 +21,8 @@ const ServiceCard = ({ imageSource, title, description }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 22,
-    borderBottomRightRadius: 22,
+    backgroundColor: '#404040',
+    borderRadius:20,
     marginVertical: 10,
     marginHorizontal: 10, 
     width: cardWidth, 
@@ -36,21 +35,23 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   cardImage: {
+    opacity: 0.8,
     width: '100%',
     height: 180, // Height of the image at the top of the card
-    padding: 8
+    padding: 8,
+    borderRadius: 20
   },
   cardTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#ffffffff',
     paddingHorizontal: 15,
     paddingTop: 15,
     paddingBottom: 5,
   },
   cardDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#ffffffff',
     paddingHorizontal: 15,
     paddingBottom: 15,
     lineHeight: 20,

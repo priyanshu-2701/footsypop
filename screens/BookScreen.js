@@ -13,6 +13,7 @@ const categories = [
     "Corporate Parties",
     "Wedding",
     "Naming Ceremony",
+    "Other"
 ];
 
 
@@ -109,7 +110,7 @@ export default function BookScreen({ navigation }) {
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item}
-                numColumns={1}
+                numColumns={2}
                 
                 renderItem={renderCategoryItem}
                 contentContainerStyle={styles.list}
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#0077cc",
+    backgroundColor: "#000000",
     paddingHorizontal: 16,
     paddingVertical: 12,
     elevation: 5,
@@ -149,33 +150,31 @@ const styles = StyleSheet.create({
   },
     safeArea: {
     flex: 1,
-    backgroundColor: '#ffffffff',
+    backgroundColor: '#060000ff',
     },
     container: {
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    color:'white',
+    color:'#000000',
     },
     title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#000',
+    color: 'white',
     },
     subtitle: {
     fontSize: 16,
-    color: '#555',
+    color: '#ffffffff',
     marginBottom: 30,
     },
-    row: {
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    },
+    
     option: {
+      borderRadius:20,
     backgroundColor: '#1E293B',
     borderRadius: 10,
-    width: 270,
-    height: 45,
+    width: 155,
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
