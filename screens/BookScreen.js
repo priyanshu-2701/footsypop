@@ -1,196 +1,266 @@
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList,SafeAreaView,StatusBar } from "react-native";
-// (No need for Alert import anymore)
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  StatusBar
+} from "react-native";
 
 const categories = [
-    "Anniversary",
-    "Birthday",
-    "Engagement",
-    "House Warming",
-    "Stage Events",
-    "Cultural Events",
-    "Corporate Parties",
-    "Wedding",
-    "Naming Ceremony",
-    "Other"
+  "Anniversary",
+  "Birthday",
+  "Engagement",
+  "House Warming",
+  "Stage Events",
+  "Cultural Events",
+  "Corporate Parties",
+  "Wedding",
+  "Naming Ceremony",
+  "Other"
 ];
 
+export default function BookScreen({ navigation }) {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState(categories);
 
-const GRAY = "#2d3748";
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
 
+    switch (category) {
+      case "Anniversary":
+        navigation.navigate("Anniversary");
+        break;
+      case "Birthday":
+        navigation.navigate("Birthday");
+        break;
+      case "Engagement":
+        navigation.navigate("Engagement");
+        break;
+      case "House Warming":
+        navigation.navigate("HouseWarming");
+        break;
+        case "Stage Events":
+        navigation.navigate("StageEvents");
+        break;
+        case "Corporate Parties":
+        navigation.navigate("CorporateParties");
+        break;
+        case "Cultural Events":
+        navigation.navigate("CulturalEvents");
+        break;
+        case "Wedding":
+        navigation.navigate("Wedding");
+        break;
+        case "Naming Ceremony":
+        navigation.navigate("NamingCeremony");
+        break;
+      default:
+        navigation.navigate("EventDetails", { category });
+    }
+  };
 
-// Ensure you receive the navigation prop
-export default function BookScreen({ navigation }) { 
-    const [selectedCategory, setSelectedCategory] = useState(null);
-
-    const handleSelectCategory = (category) => {
-  setSelectedCategory(category);
-
-  switch (category) {
-    case "Anniversary":
-      navigation.navigate('Anniversary');
-
-      break;
-    case "Birthday":
-      navigation.navigate('Birthday'); 
-      break;
-    case "Engagement":
-      navigation.navigate("EventDetails", { category }); 
-      break;
-    case "House Warming":
-      navigation.navigate("EventDetails", { category }); 
-      break;
-    case "Stage Events":
-      navigation.navigate("EventDetails", { category });
-      break;
-    case "Cultural Events":
-      navigation.navigate("EventDetails", { category });
-      break;
-    case "Corporate Parties":
-      navigation.navigate("EventDetails", { category });
-      break;
-    case "Wedding":
-      navigation.navigate("EventDetails", { category });
-      break;
-    case "Naming Ceremony":
-      navigation.navigate("EventDetails", { category });
-      break;
-    default:
-      navigation.navigate("EventDetails", { category });
-  }
-};
-
-
-    const renderCategoryItem = ({ item }) => {
-        const isSelected = item === selectedCategory;
-
-        return (
-            <TouchableOpacity 
-                style={[
-                    styles.option,
-                    isSelected && styles.optionSelected
-                ]}
-                onPress={() => handleSelectCategory(item)}
-            >
-                <Text 
-                    style={[
-                        styles.optionText,
-                        isSelected && styles.optionTextSelected
-                    ]}
-                >
-                    {item}
-                </Text>
-            </TouchableOpacity>
-        );
-    };
+  const renderCategoryItem = ({ item }) => {
+    const isSelected = item === selectedCategory;
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-        <StatusBar style="light" backgroundColor="#0077cc" translucent={false} />
-                  <View style={styles.header}>
-                  <Text style={styles.title1}>FootsyPop</Text>
-          
-                  <View style={styles.headerIcons}>
-                    <TouchableOpacity onPress={() => alert("Working on this feature!")}>
-                      <Ionicons name="search" size={24} color="white" style={styles.icon} />
-                    </TouchableOpacity>
-          
-                    <TouchableOpacity onPress={() => alert("Working on this feature!")}>
-                      <Ionicons name="call" size={24} color="white" style={styles.icon} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-        <View style={styles.container}>
-          
-            <Text style={styles.title}>Book Your Event</Text>
-            <Text style={styles.subtitle}>Choose an Event Type to Proceed</Text>
-
-            <FlatList
-                data={categories}
-                keyExtractor={(item) => item}
-                numColumns={2}
-                
-                renderItem={renderCategoryItem}
-                contentContainerStyle={styles.list}
-            />
-        </View>
-        </SafeAreaView>
+      <TouchableOpacity
+        style={[
+          styles.option,
+          isSelected && styles.optionSelected
+        ]}
+        onPress={() => handleSelectCategory(item)}
+      >
+        <Text
+          style={[
+            styles.optionText,
+            isSelected && styles.optionTextSelected
+          ]}
+        >
+          {item}
+        </Text>
+      </TouchableOpacity>
     );
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="light" backgroundColor="#000" />
+
+      
+      <View style={styles.header}>
+        <Text style={styles.title1}>FootsyPop</Text>
+
+        <View style={styles.headerIcons}>
+          <TouchableOpacity onPress={() => setSearchVisible(true)}>
+            <Ionicons name="search" size={24} color="white" style={styles.icon} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      
+      {searchVisible && (
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={20} color="#d1d5db" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search events..."
+            placeholderTextColor="#9ca3af"
+            value={searchText}
+            onChangeText={(text) => {
+              setSearchText(text);
+              const results = categories.filter((item) =>
+                item.toLowerCase().includes(text.toLowerCase())
+              );
+              setFilteredCategories(results);
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={() => {
+              setSearchVisible(false);
+              setSearchText("");
+              setFilteredCategories(categories);
+            }}
+          >
+            <Ionicons name="close" size={22} color="#d1d5db" />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <View style={styles.container}>
+        <Text style={styles.title}>Book Your Event</Text>
+        <Text style={styles.subtitle}>Choose an Event Type to Proceed</Text>
+
+        <FlatList
+          data={filteredCategories}
+          keyExtractor={(item) => item}
+          numColumns={2}
+          renderItem={renderCategoryItem}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </SafeAreaView>
+  );
 }
 
-
 const styles = StyleSheet.create({
-    header: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000", 
+  },
+
+  header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#000000",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: "#000",
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+
+    borderBottomWidth: 0.6,
+    borderBottomColor: "#ffffff22",
   },
+
   title1: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: "bold",
-    color: "white",
+    color: "#fff",
     letterSpacing: 1,
-    fontFamily: "LobsterTwo_400Regular"
+    fontFamily: "LobsterTwo_400Regular",
   },
+
   headerIcons: {
     flexDirection: "row",
   },
+
   icon: {
-    marginLeft: 20,
+    marginLeft: 18,
   },
-    safeArea: {
+
+  container: {
     flex: 1,
-    backgroundColor: '#060000ff',
-    },
-    container: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 20,
-    color:'#000000',
-    },
-    title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: 'white',
-    },
-    subtitle: {
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    color: "white",
+    marginTop: 10,
+  },
+
+  subtitle: {
     fontSize: 16,
-    color: '#ffffffff',
-    marginBottom: 30,
-    },
-    
-    option: {
-      borderRadius:20,
-    backgroundColor: '#1E293B',
-    borderRadius: 10,
-    width: 155,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 10,
-    shadowColor: '#000',
+    color: "#e5e7eb",
+    marginBottom: 25,
+  },
+
+  list: {
+    paddingBottom: 100,
+  },
+
+  
+  option: {
+    backgroundColor: "#111827",
+    borderRadius: 18,
+    width: 160,
+    height: 155,
+    marginHorizontal: 8,
+    marginBottom: 18,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    borderWidth: 1,
+    borderColor: "#ffffff22",
+
+    shadowColor: "#fff",
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-    marginBottom: 14,
- 
-    },
-    optionText: {
-    color: '#fff',
+    shadowRadius: 10,
+    elevation: 8,
+  },
+
+  optionSelected: {
+    backgroundColor: "#1f2937",
+    borderColor: "#60a5fa",
+    elevation: 12,
+  },
+
+  optionText: {
+    color: "#e5e7eb",
+    fontSize: 17,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+
+  optionTextSelected: {
+    color: "#60a5fa",
+  },
+
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1f2937",
+    padding: 12,
+    borderRadius: 14,
+    margin: 15,
+    borderWidth: 1,
+    borderColor: "#ffffff22",
+  },
+
+  searchInput: {
+    color: "white",
     fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    },
-    
-    
+    marginLeft: 10,
+    flex: 1,
+  },
 });

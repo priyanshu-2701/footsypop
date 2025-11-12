@@ -23,6 +23,7 @@ const EditProfileScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // ✅ Fetch User Data from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -33,7 +34,14 @@ const EditProfileScreen = ({ navigation }) => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          setUserData(docSnap.data());
+          const data = docSnap.data();
+          setUserData({
+            // ✅ Use name if available, else combine first and last name
+            name: data.name || `${data.firstName || ""} ${data.lastName || ""}`.trim(),
+            email: data.email || "",
+            phone: data.phone || "",
+            address: data.address || "",
+          });
         }
       } catch (error) {
         Alert.alert("Error", "Could not load user data");
@@ -45,6 +53,7 @@ const EditProfileScreen = ({ navigation }) => {
     fetchUserData();
   }, []);
 
+  // ✅ Save Updated Data
   const handleSave = async () => {
     const user = auth.currentUser;
     if (!user) return;
@@ -56,12 +65,19 @@ const EditProfileScreen = ({ navigation }) => {
 
     setSaving(true);
     try {
+      const nameParts = userData.name.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
       const docRef = doc(db, "users", user.uid);
       await updateDoc(docRef, {
         name: userData.name,
+        firstName,
+        lastName,
         phone: userData.phone,
         address: userData.address,
       });
+
       Alert.alert("Success", "Profile updated successfully!");
       navigation.goBack();
     } catch (error) {
@@ -97,8 +113,7 @@ const EditProfileScreen = ({ navigation }) => {
         <TextInput
           style={[styles.input, { backgroundColor: "#e0e0e0" }]}
           value={userData.email}
-          editable={false}
-          selectTextOnFocus={false}
+          editable={false} // Email not editable
         />
 
         <Text style={styles.label}>Phone Number</Text>
@@ -161,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   input: {
-    backgroundColor: "#ffffffff",
+    backgroundColor: "#fff",
     padding: 12,
     borderRadius: 10,
     marginBottom: 15,
@@ -176,7 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   saveButtonText: {
-    color: "#fff",
+    color: "#000",
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",

@@ -1,96 +1,36 @@
-import React,{useState}from 'react';
+import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Image, 
-  FlatList, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
   SafeAreaView,
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Dimensions,
 } from 'react-native';
-
-const PRIMARY_BLUE = "#1c93ed";
-
-
 import { BlurView } from 'expo-blur';
+
+const { width } = Dimensions.get('window');
+
 export default function AnniversaryScreen({ navigation }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
   const decorItems = [
-    {
-      id: '1',
-      title: 'I Love You Bedroom Decor',
-      image: require('../assets/pic1.png'),
-      price: '₹2,649',
-      oldPrice: '₹3,200',
-    },
-    {
-      id: '2',
-      title: 'Happy Anniversary Red Theme',
-      image: require('../assets/pic2.png'),
-      price: '₹2,199',
-      oldPrice: '₹3,000',
-    },
-    {
-      id: '3',
-      title: 'Happy Anniversary Blue White Gold Decor',
-      image: require('../assets/pic3.png'),
-      price: '₹3,499',
-      oldPrice: '₹4,000',
-    },
-    {
-      id: '4',
-      title: 'Happy Valentine Decor',
-      image: require('../assets/pic4.png'),
-      price: '₹3,500',
-      oldPrice: '₹4,100',
-    },
-    {
-      id: '5',
-      title: 'Purple Grand Anniversary Decor',
-      image: require('../assets/pic5.png'),
-      price: '₹3,299',
-      oldPrice: '₹3,999',
-    },
-    {
-      id: '6',
-      title: 'Happy Anniversary White Black Balloons',
-      image: require('../assets/pic6.png'),
-      price: '₹2,999',
-      oldPrice: '₹3,400',
-    },
-    {
-      id: '7',
-      title: 'Happy Anniversary',
-      image: require('../assets/pic7.png'),
-      price: '₹1,899',
-      oldPrice: '₹2,400',
-    },
-    {
-      id: '8',
-      title: 'Happy Anniversary',
-      image: require('../assets/pic8.png'),
-      price: '₹3,199',
-      oldPrice: '₹3,899',
-    },
-    {
-      id: '9',
-      title: 'Anniversary Balloon Decor',
-      image: require('../assets/pic9.png'),
-      price: '₹2,599',
-      oldPrice: '₹3,000',
-    },
-    {
-      id: '10',
-      title: 'Happy Anniversary Green White Balloons',
-      image: require('../assets/pic10.png'),
-      price: '₹2,999',
-      oldPrice: '₹3,500',
-    },
+    { id: '1', title: 'I Love You Bedroom Decor', image: require('../assets/pic1.png'), price: '₹2,649', oldPrice: '₹3,200' },
+    { id: '2', title: 'Happy Anniversary Red Theme', image: require('../assets/pic2.png'), price: '₹2,199', oldPrice: '₹3,000' },
+    { id: '3', title: 'Happy Anniversary Blue White Gold Decor', image: require('../assets/pic3.png'), price: '₹3,499', oldPrice: '₹4,000' },
+    { id: '4', title: 'Happy Valentine Decor', image: require('../assets/pic4.png'), price: '₹3,500', oldPrice: '₹4,100' },
+    { id: '5', title: 'Purple Grand Anniversary Decor', image: require('../assets/pic5.png'), price: '₹3,299', oldPrice: '₹3,999' },
+    { id: '6', title: 'Anniversary White Black Balloons', image: require('../assets/pic6.png'), price: '₹2,999', oldPrice: '₹3,400' },
+    { id: '7', title: 'Happy Anniversary', image: require('../assets/pic7.png'), price: '₹1,899', oldPrice: '₹2,400' },
+    { id: '8', title: 'Happy Anniversary', image: require('../assets/pic8.png'), price: '₹3,199', oldPrice: '₹3,899' },
   ];
+
   const handleLongPress = (image) => {
     setSelectedImage(image);
     setModalVisible(true);
@@ -102,164 +42,167 @@ export default function AnniversaryScreen({ navigation }) {
   };
 
   return (
-    
-      <View style={styles.container}>
-        <View style={styles.header}>
+    <SafeAreaView style={styles.safearea}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={26} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Anniversary</Text>
-        </View>
-        <FlatList
-          data={decorItems}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <TouchableOpacity 
-              onLongPress={() => handleLongPress(item.image)}
-              delayLongPress={200}
-            >
-              <View style={styles.card}>
-                <Image source={item.image} style={styles.cardImage} />
-                <View style={styles.cardInfo}>
-                  <Text style={styles.cardTitle}>{item.title}</Text>
-                  <View style={styles.priceRow}>
-                    <Text style={styles.newPrice}>{item.price}</Text>
-                    <Text style={styles.oldPrice}>{item.oldPrice}</Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
+        <Text style={styles.headerTitle}>Anniversary Specials</Text>
+      </View>
+
+      <View style={styles.banner}>
+        <Text style={styles.bannerHeading}>Celebrate Your Special Day</Text>
+        <Text style={styles.bannerSub}>
+          Elegant decorations crafted with love and luxury.
+        </Text>
+      </View>
+
+      <FlatList
+        data={decorItems}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 40 }}
+        
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onLongPress={() => handleLongPress(item.image)}
+            delayLongPress={180}
+          >
+            <Image source={item.image} style={styles.cardImage} />
+            <Text style={styles.cardTitle} numberOfLines={2}>
+              {item.title}
+            </Text>
+
+            <View style={styles.priceRow}>
+              <Text style={styles.newPrice}>{item.price}</Text>
+              <Text style={styles.oldPrice}>{item.oldPrice}</Text>
             </View>
-          )}
-        />
-        <Modal visible={modalVisible} transparent animationType="fade">
+          </TouchableOpacity>
+        )}
+      />
+
+      {/* Image Zoom Modal */}
+      <Modal visible={modalVisible} transparent animationType="fade">
         <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.modalContainer}>
-            <BlurView intensity={60} style={StyleSheet.absoluteFill} tint="dark" />
+            <BlurView intensity={70} tint="dark" style={StyleSheet.absoluteFill} />
+
             {selectedImage && (
-              <Image 
-                source={selectedImage} 
-                style={styles.zoomedImage} 
-                resizeMode="contain" 
+              <Image
+                source={selectedImage}
+                style={styles.zoomedImage}
+                resizeMode="contain"
               />
             )}
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      </View>
-    
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safearea: {
     flex: 1,
-    backgroundColor: "#f3f6f9ff", 
+    backgroundColor: '#000',
   },
   header: {
-    paddingTop: 50,
+    paddingTop: 10,
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 18,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2f4156',
-    borderBottomWidth: 5,
-    borderBottomColor: '#f7f8faff',
+    backgroundColor: '#000',
+    borderBottomColor: '#222',
+    borderBottomWidth: 1,
   },
   backButton: {
     marginRight: 15,
   },
   headerTitle: {
-    fontSize: 22,
-    color: "#fff",
-    fontWeight: "700",
-  },
-  content: {
-    flex: 1,
-    paddingTop: 30,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  greetingText: {
-    fontSize: 20,
-    color: PRIMARY_BLUE,
-    fontWeight: '600',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  infoText: {
-    fontSize: 16,
-    color: '#ccc',
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  bookButton: {
-    backgroundColor: PRIMARY_BLUE,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  bookButtonText: {
-    color: '#fff',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '700',
+    color: '#f2f862',
   },
+
+  banner: {
+    backgroundColor: "#111",
+    padding: 20,
+    alignItems: "center",
+    marginBottom: 10,
+    borderBottomColor: '#f2f86250',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    borderColor: "#333",
+    borderWidth: 1,
+  },
+  bannerHeading: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#f2f862',
+    marginBottom: 4,
+  },
+  bannerSub: {
+    fontSize: 14,
+    color: '#ddd',
+  },
+
+  /* Card Grid */
   card: {
-    marginTop:10,
-  marginLeft: 14,
-  width: '93%',
-  shadowColor: '#000',      
-  shadowOffset: { width: 0, height: 4 }, 
-  shadowRadius: 20,           
-  elevation: 8,
-},
-cardImage: { 
-borderTopLeftRadius: 22,
-width: '100%',
-height: 240,
-align: 'center', 
-},
-cardInfo: {
-  padding: 6,
-  backgroundColor: '#2f4156',
-  
-  borderBottomRightRadius: 22,
-},
-cardTitle: {
-  fontSize: 16,
-  fontWeight: '700',
-  color: '#fff',
-  marginBottom: 6,
-},
-priceRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 8,
-},
-newPrice: {
-  fontSize: 16,
-  color: '#00c853',
-  fontWeight: '700',
-},
-oldPrice: {
-  fontSize: 14,
-  color: '#888',
-  textDecorationLine: 'line-through',
-},
-modalContainer: {
+    backgroundColor: "#111",
+    borderRadius: 16,
+    padding: 10,
+    marginBottom: 16,
+    width: "48%",
+    shadowColor: "#000",
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: "#222",
+    marginHorizontal:"2%",
+  },
+
+  cardImage: {
+    width: "100%",
+    height: 150,
+    borderRadius: 12,
+  },
+  cardTitle: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "700",
+    marginTop: 8,
+  },
+
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 4,
+  },
+  newPrice: {
+    color: "#00e676",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  oldPrice: {
+    color: "#777",
+    textDecorationLine: "line-through",
+    fontSize: 12,
+  },
+
+  /* Modal */
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   zoomedImage: {
-    width: '90%',
-  height: '70%',
-  borderRadius: 20,          
-  shadowColor: '#000',
-  shadowOpacity: 0.25,
-  shadowRadius: 10,
-  elevation: 10,
+    width: '88%',
+    height: '70%',
+    borderRadius: 20,
   },
 });

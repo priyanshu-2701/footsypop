@@ -1,195 +1,212 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Button, ActivityIndicator, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { signOut } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
+import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 const SettingsScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const user = auth.currentUser;
-        if (!user) return;
+  // ✅ Function to fetch user data
+  const loadUser = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
 
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
 
-        if (userSnap.exists()) {
-          setUserData(userSnap.data());
-        } else {
-          // Fallback to Auth data if Firestore doc not found
-          setUserData({
-            firstName: user.displayName?.split(" ")[0] || "",
-            lastName: user.displayName?.split(" ")[1] || "",
-            email: user.email,
-            phone: user.phoneNumber || "",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        Alert.alert("Error", "Failed to load user details.");
-      } finally {
-        setLoading(false);
+      if (snap.exists()) {
+        setUserData(snap.data());
+      } else {
+        setUserData({ email: user.email });
       }
-    };
+    } catch (e) {
+      console.log(e);
+      Alert.alert("Error", "Failed to load user data.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchUserData();
+  // ✅ Load user once when component mounts
+  useEffect(() => {
+    loadUser();
   }, []);
+
+  // ✅ Auto-reload user data when screen is focused (after editing profile)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      loadUser();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const handleLogout = () => {
+    signOut(auth);
+  };
 
   if (loading) {
     return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#ffffff" />
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#fff" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profile</Text>
-      </View>
-
-      {/* Scrollable content */}
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Profile Info */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>User Details</Text>
-
-          <View style={styles.infoBox}>
-            <View style={styles.infoItem}>
-              <Text style={styles.label}>First Name</Text>
-              <Text style={styles.value}>{userData?.firstName || "-"}</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.label}>Last Name</Text>
-              <Text style={styles.value}>{userData?.lastName || "-"}</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.label}>Email</Text>
-              <Text style={styles.value}>{userData?.email || "-"}</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.label}>Phone</Text>
-              <Text style={styles.value}>{userData?.phone || "-"}</Text>
-            </View>
+      <ScrollView contentContainerStyle={{ paddingVertical: 40 }}>
+        {/* ✅ Profile Section */}
+        <TouchableOpacity
+          style={styles.profileSection}
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Image
+            source={{
+              uri:
+                userData?.profileImage ||
+                "https://i.pravatar.cc/150?img=3",
+            }}
+            style={styles.avatar}
+          />
+          <View>
+            {/* ✅ Show full updated name */}
+            <Text style={styles.userName}>
+              {userData?.name ||
+                `${userData?.firstName || "Guest"} ${userData?.lastName || ""}`}
+            </Text>
+            <Text style={styles.editText}>Edit profile</Text>
           </View>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => navigation.navigate("EditProfile")}
-          >
-            <Text style={styles.editButtonText}>Edit Profile</Text>
+        {/* ✅ Menu Items */}
+        <View style={styles.menuList}>
+          <MenuItem icon="calendar-outline" text="Booking" onPress={() => navigation.navigate("SettingsDetails")} />
+          <MenuItem icon="card-outline" text="Payment methods" onPress={() => navigation.navigate("PaymentMethods")} />
+          <MenuItem icon="chatbubbles-outline" text="Get in Touch" onPress={() => navigation.navigate("Contact")} />
+          <MenuItem icon="chatbox-ellipses-outline" text="Give us feedback" onPress={() => navigation.navigate("Feedback")} />
+        </View>
+
+        {/* ✅ Logout */}
+        <View style={styles.logoutBox}>
+          <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={22} color="#080808ff" />
+            <Text style={styles.logoutText}>Log out</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Additional Settings */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <TouchableOpacity style={styles.option}>
-            <Ionicons name="notifications-outline" size={22} color="#ffffffff" />
-            <Text style={styles.optionText}>Notifications</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Ionicons name="lock-closed-outline" size={22} color="#ffffffff" />
-            <Text style={styles.optionText}>Change Password</Text>
-          </TouchableOpacity>
-
-          <View style={styles.option}>
-            <Ionicons name="log-out-outline" size={22} color="red" />
-            <Button title="Logout" color="red" onPress={() => signOut(auth)} />
-          </View>
-        </View>
+        {/* ✅ Footer */}
+        <Text style={styles.versionText}>Version 1.0.2 (72)</Text>
+        <Text style={styles.tosText}>Terms of Service</Text>
       </ScrollView>
     </View>
   );
 };
+
+const MenuItem = ({ icon, text, onPress }) => (
+  <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+    <Ionicons name={icon} size={22} color="#fff" />
+    <Text style={styles.menuText}>{text}</Text>
+    <Ionicons name="chevron-forward" size={20} color="#555" />
+  </TouchableOpacity>
+);
 
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#000",
   },
-  loaderContainer: {
+  loader: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000000",
+    backgroundColor: "#000",
   },
-  header: {
-    flexDirection: "row",
+  profileSection: {
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 50,
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#000000ff",
-    backgroundColor: "#000000ff",
+    paddingHorizontal: 24,
+    marginBottom: 35,
   },
-  headerTitle: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#ffffffff",
-  },
-  content: {
-    padding: 20,
-  },
-  section: {
-    marginBottom: 25,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 60,
     marginBottom: 10,
-    color: "#ffffffff",
   },
-  infoBox: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-  },
-  infoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  label: {
-    color: "#aaa",
-    fontWeight: "500",
-  },
-  value: {
-    color: "#fff",
-    fontWeight: "400",
-  },
-  editButton: {
-    marginTop: 15,
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  editButtonText: {
+  userName: {
+    fontSize: 18,
     color: "#fff",
     fontWeight: "600",
+    textAlign: "center",
   },
-  option: {
+  editText: {
+    color: "#888",
+    textAlign: "center",
+    marginTop: 5,
+  },
+  menuList: {
+    borderTopWidth: 0.3,
+    borderTopColor: "#222",
+    paddingTop: 15,
+    marginHorizontal: 15,
+  },
+  menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 16,
+    borderBottomWidth: 0.3,
+    borderBottomColor: "#222",
   },
-  optionText: {
-    marginLeft: 12,
+  menuText: {
+    flex: 1,
+    marginLeft: 15,
     fontSize: 16,
-    color: "#ffffffff",
+    color: "#fff",
+  },
+  logoutBox: {
+    backgroundColor: "#f2f862",
+    borderRadius: 90,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    marginHorizontal: 60,
+    marginTop: 30,
+  },
+  logoutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutText: {
+    color: "#030303ff",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 6,
+  },
+  versionText: {
+    color: "#555",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 30,
+  },
+  tosText: {
+    color: "#777",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 4,
   },
 });

@@ -19,11 +19,17 @@ import AnniversaryScreen from './screens/AnniversaryScreen';
 import BirthdayScreen from './screens/BirthdayScreen';
 import WeddingScreen from './screens/WeddingScreen';
 import EditProfileScreen from "./screens/EditProfileScreen";
+import HouseWarmingScreen from "./screens/HouseWarmingScreen";
+import ContactScreen from "./screens/ContactScreen";
+import FeedbackScreen from "./screens/FeedbackScreen";
+import EngagementScreen from "./screens/EngagementScreen";
+import CulturalEventsScreen from "./screens/CulturalEventsScreen";
+import StageEventsScreen from "./screens/StageEventsScreen";
+import CorporatePartiesScreen from "./screens/CorporatePartiesScreen";
+import NamingCeremonyScreen from "./screens/NamingCeremonyScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const PRIMARY_BLUE = "#1c93ed"; // Brighter blue for the icon inside the circle
-const BAR_BLUE = "#0077cc"; 
 
 function MainTabs() {
   const CIRCLE_SIZE = 56;
@@ -121,7 +127,7 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  return (
+return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
@@ -134,6 +140,15 @@ export default function App() {
             <Stack.Screen name="Birthday" component={BirthdayScreen} />
             <Stack.Screen name="Wedding" component={WeddingScreen} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+            <Stack.Screen name="Feedback" component={FeedbackScreen} />
+            <Stack.Screen name="Engagement" component={EngagementScreen} />
+            <Stack.Screen name="HouseWarming" component={HouseWarmingScreen} />
+            <Stack.Screen name="StageEvents" component={StageEventsScreen} />
+            <Stack.Screen name="CorporateParties" component={CorporatePartiesScreen} />
+            <Stack.Screen name="Contact" component={ContactScreen} />
+            <Stack.Screen name="CulturalEvents" component={CulturalEventsScreen} />
+            <Stack.Screen name="NamingCeremony" component={NamingCeremonyScreen} />
+            
           </>
         ) : (
           <>
@@ -144,4 +159,5 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   );
+
 }
